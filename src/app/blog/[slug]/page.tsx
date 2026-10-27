@@ -8,7 +8,10 @@ import { ArrowLeft, Calendar, Clock, User, Tag } from "lucide-react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { AdSlot } from "@/components/ads/AdSlot";
-import { getPostBySlug } from "@/lib/blog/posts";
+import { getPostBySlugAsync } from "@/lib/blog/posts";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 interface ArticlePageProps {
   params: Promise<{ slug: string }>;
@@ -16,7 +19,7 @@ interface ArticlePageProps {
 
 export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
   const { slug } = await params;
-  const post = getPostBySlug(slug);
+  const post = await getPostBySlugAsync(slug);
 
   if (!post) {
     return { title: "Article Not Found | Backbencher.codes" };
@@ -50,7 +53,7 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
 
 export default async function BlogPostPage({ params }: ArticlePageProps) {
   const { slug } = await params;
-  const post = getPostBySlug(slug);
+  const post = await getPostBySlugAsync(slug);
 
   if (!post || post.status !== "published") {
     notFound();

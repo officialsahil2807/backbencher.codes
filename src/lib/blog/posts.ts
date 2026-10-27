@@ -203,6 +203,83 @@ Use \`asyncio\` for I/O operations and \`multiprocessing\` (or Python 3.12's per
   },
 ];
 
+import { createClient } from "@supabase/supabase-js";
+
+function getSupabaseClient() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!url || !anonKey || url.includes("your-project-id") || anonKey.includes("your-anon-key")) {
+    return null;
+  }
+  return createClient(url, anonKey);
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function mapRowToPost(row: any): BlogPost {
+  return {
+    id: row.id,
+    slug: row.slug,
+    title: row.title,
+    excerpt: row.excerpt || "",
+    body: row.body,
+    author: row.author || "Backbencher Team",
+    category: row.category || "General",
+    tags: Array.isArray(row.tags) ? row.tags : [],
+    status: row.status as "published" | "draft",
+    publishedAt: row.published_at || new Date().toISOString().split("T")[0],
+    readingTime: row.reading_time || 5,
+    coverImage: row.cover_image,
+    seoTitle: row.seo_title,
+    seoDesc: row.seo_desc,
+  };
+}
+
+export async function getPublishedPostsAsync(): Promise<BlogPost[]> {
+  try {
+    const supabase = getSupabaseClient();
+    if (supabase) {
+      const { data, error } = await supabase
+        .from("posts")
+        .select("*")
+        .eq("status", "published");
+
+      if (!error && data && data.length > 0) {
+        const supabasePosts = data.map(mapRowToPost);
+        const supabaseSlugs = new Set(supabasePosts.map((p) => p.slug));
+        const defaultSeeds = postsStore.filter(
+          (p) => p.status === "published" && !supabaseSlugs.has(p.slug)
+        );
+        const combined = [...supabasePosts, ...defaultSeeds];
+        combined.sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
+        return combined;
+      }
+    }
+  } catch (err) {
+    console.warn("Error fetching posts from Supabase:", err);
+  }
+  return getPublishedPosts();
+}
+
+export async function getPostBySlugAsync(slug: string): Promise<BlogPost | undefined> {
+  try {
+    const supabase = getSupabaseClient();
+    if (supabase) {
+      const { data, error } = await supabase
+        .from("posts")
+        .select("*")
+        .eq("slug", slug)
+        .maybeSingle();
+
+      if (!error && data) {
+        return mapRowToPost(data);
+      }
+    }
+  } catch (err) {
+    console.warn(`Error fetching post '${slug}' from Supabase:`, err);
+  }
+  return getPostBySlug(slug);
+}
+
 export function getPublishedPosts(): BlogPost[] {
   return postsStore.filter((p) => p.status === "published");
 }
@@ -229,3 +306,4 @@ export function deletePost(id: string): boolean {
   postsStore = postsStore.filter((p) => p.id !== id);
   return postsStore.length < initialLength;
 }
+

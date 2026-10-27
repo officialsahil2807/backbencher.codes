@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { getPublishedPosts } from "@/lib/blog/posts";
+import { getPublishedPostsAsync } from "@/lib/blog/posts";
 
 export async function GET() {
-  const posts = getPublishedPosts();
+  const posts = await getPublishedPostsAsync();
   const siteUrl = "https://backbencher.codes";
 
   const itemsXml = posts

@@ -1,8 +1,8 @@
 import { MetadataRoute } from "next";
 import { LANGUAGE_LIST } from "@/lib/compiler/languages";
-import { getPublishedPosts } from "@/lib/blog/posts";
+import { getPublishedPostsAsync } from "@/lib/blog/posts";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = "https://backbencher.codes";
   const now = new Date();
 
@@ -54,8 +54,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.85,
   }));
 
-  // Published Blog Posts
-  const blogRoutes: MetadataRoute.Sitemap = getPublishedPosts().map((post) => ({
+  // Published Blog Posts (Live from Supabase)
+  const publishedPosts = await getPublishedPostsAsync();
+  const blogRoutes: MetadataRoute.Sitemap = publishedPosts.map((post) => ({
     url: `${siteUrl}/blog/${post.slug}`,
     lastModified: new Date(post.publishedAt),
     changeFrequency: "monthly",
