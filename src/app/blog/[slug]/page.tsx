@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { marked } from "marked";
-import DOMPurify from "isomorphic-dompurify";
 import { ArrowLeft, Calendar, Clock, User, Tag } from "lucide-react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
@@ -19,7 +18,8 @@ interface ArticlePageProps {
 
 export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
   const { slug } = await params;
-  const post = await getPostBySlugAsync(slug);
+  const decodedSlug = decodeURIComponent(slug);
+  const post = (await getPostBySlugAsync(decodedSlug)) || (await getPostBySlugAsync(slug));
 
   if (!post) {
     return { title: "Article Not Found | Backbencher.codes" };
@@ -36,8 +36,8 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
       description,
       type: "article",
       publishedTime: post.publishedAt,
-      authors: [post.author],
-      tags: post.tags,
+      authors: post.author ? [post.author] : ["Backbencher Team"],
+      tags: Array.isArray(post.tags) ? post.tags : [],
       url: `https://backbencher.codes/blog/${post.slug}`,
     },
     twitter: {
@@ -53,15 +53,15 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
 
 export default async function BlogPostPage({ params }: ArticlePageProps) {
   const { slug } = await params;
-  const post = await getPostBySlugAsync(slug);
+  const decodedSlug = decodeURIComponent(slug);
+  const post = (await getPostBySlugAsync(decodedSlug)) || (await getPostBySlugAsync(slug));
 
   if (!post || post.status !== "published") {
     notFound();
   }
 
-  // Parse markdown and sanitize HTML safely
-  const rawHtml = await marked.parse(post.body);
-  const cleanHtml = DOMPurify.sanitize(rawHtml);
+  // Parse markdown safely
+  const cleanHtml = await marked.parse(post.body || "");
 
   return (
     <div
