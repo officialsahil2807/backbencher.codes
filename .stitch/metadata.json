@@ -1,0 +1,54 @@
+{
+  "name": "projects/17664511784400995872",
+  "projectId": "17664511784400995872",
+  "title": "Backbencher.codes",
+  "visibility": "PRIVATE",
+  "projectType": "PROJECT_DESIGN",
+  "origin": "STITCH",
+  "deviceType": "DESKTOP",
+  "designTheme": {
+    "name": "assets/db819cb37e294804a23e77960a3e4faa",
+    "displayName": "Obsidian Terminal",
+    "colorMode": "DARK",
+    "font": "INTER",
+    "headlineFont": "INTER",
+    "bodyFont": "INTER",
+    "labelFont": "JETBRAINS_MONO",
+    "customColor": "#ff7900",
+    "colors": {
+      "surface": "#131315",
+      "background": "#0B0B0D",
+      "card": "#141416",
+      "editor": "#101012",
+      "primary": "#FF7900",
+      "primaryHover": "#FF963D",
+      "border": "#292929",
+      "text": "#F5F5F5",
+      "muted": "#A1A1AA",
+      "secondary": "#10B981",
+      "tertiary": "#3B82F6"
+    }
+  },
+  "screens": {
+    "homepage": {
+      "id": "cc4fa34e56b14823814e50053f6d385a",
+      "sourceScreen": "projects/17664511784400995872/screens/cc4fa34e56b14823814e50053f6d385a",
+      "label": "Backbencher.codes - Developer Education Homepage"
+    },
+    "ide": {
+      "id": "f68b1357ea9e463c90e2736035eef5f7",
+      "sourceScreen": "projects/17664511784400995872/screens/f68b1357ea9e463c90e2736035eef5f7",
+      "label": "Backbencher.codes - Cloud IDE & Workspace"
+    },
+    "tutorials": {
+      "id": "1be4e3e3362c4a41b159155b2b08d03a",
+      "sourceScreen": "projects/17664511784400995872/screens/1be4e3e3362c4a41b159155b2b08d03a",
+      "label": "Backbencher.codes - Tutorials & Lesson Reading View"
+    },
+    "blog": {
+      "id": "235f2100498443a986b1132442fd5788",
+      "sourceScreen": "projects/17664511784400995872/screens/235f2100498443a986b1132442fd5788",
+      "label": "Backbencher.codes - Blog & Articles View"
+    }
+  }
+}
