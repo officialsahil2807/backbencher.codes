@@ -59,6 +59,9 @@ export const metadata: Metadata = {
       { url: "/apple-icon.svg", type: "image/svg+xml" },
     ],
   },
+  other: {
+    "google-adsense-account": "ca-pub-4897524780440810",
+  },
 };
 
 export default function RootLayout({
