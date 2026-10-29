@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import Script from "next/script";
 import { ThemeProvider } from "@/lib/theme/ThemeContext";
 import "./globals.css";
 
@@ -69,9 +68,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const adsEnabled = process.env.NEXT_PUBLIC_ADS_ENABLED === "true";
-  const publisherId = process.env.NEXT_PUBLIC_ADSENSE_PUBLISHER_ID;
-
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
@@ -96,20 +92,16 @@ export default function RootLayout({
     >
       <head>
         <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4897524780440810"
+          crossOrigin="anonymous"
+        />
+        <script
           id="structured-data-jsonld"
           type="application/ld+json"
           suppressHydrationWarning
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        {adsEnabled && publisherId && (
-          <Script
-            id="google-adsense"
-            async
-            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${publisherId}`}
-            crossOrigin="anonymous"
-            strategy="lazyOnload"
-          />
-        )}
       </head>
       <body
         className="min-h-full flex flex-col"
